@@ -4,6 +4,10 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 
+// Create an array of delivery stations
+String allStations[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+String myDeliveries[];
+
 // LED Setup for various line following testing, removing implementation in final deliverable
 int leftLED = 10;
 int rightLED = 9;
@@ -179,5 +183,26 @@ void loop()
     // code==5 is our right-turn sign
     else if (pixy.line.barcodes->m_code==5)
       pixy.line.setNextTurn(-90); // -90 is a right turn 
+  }
+}
+
+void stationDelivery(String station){
+
+}
+
+void readSerial(){
+  String line = Serial.readStringUntil("/n");
+// If Serial monitor line contains the string "New Delivery" from python GUI then append myDeliveries array    
+  if(line.indexOf("New Delivery") > 0){
+    // read the last characters of the string until a space for delivery station
+    if(line.length() > 23){
+      station = line.substring(22, 24);
+      Serial.println(station);
+    }else if(line.length()>22){
+      station = line.substring(22, 23);
+      Serial.println(station);
+    }else{
+      Serial.println("Error, not delivery station was received!");
+    }
   }
 }
