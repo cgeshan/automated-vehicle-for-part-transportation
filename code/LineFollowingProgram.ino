@@ -5,8 +5,8 @@
 #include <Adafruit_MotorShield.h>
 
 // Create an array of delivery stations
-String allStations[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-String myDeliveries[];
+String allStations[] = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"};
+//String myDeliveries[];
 
 // LED Setup for various line following testing, removing implementation in final deliverable
 int leftLED = 10;
@@ -190,8 +190,9 @@ void stationDelivery(String station){
 
 }
 
-void readSerial(){
+String readSerial(){
   String line = Serial.readStringUntil("/n");
+  String station;
 // If Serial monitor line contains the string "New Delivery" from python GUI then append myDeliveries array    
   if(line.indexOf("New Delivery") > 0){
     // read the last characters of the string until a space for delivery station
@@ -205,4 +206,5 @@ void readSerial(){
       Serial.println("Error, not delivery station was received!");
     }
   }
+  return station;
 }
