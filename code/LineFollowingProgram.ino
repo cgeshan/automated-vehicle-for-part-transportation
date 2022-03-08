@@ -187,10 +187,32 @@ void loop()
 }
 
 void stationDelivery(String station){
+  int8_t res2;
+  res2 = pixy.line.getMainFeatures();
+  
+  if(res2&LINE_BARCODE){
+    // If scanned barcode matched the station
+    if(pixy.line.barcodes -> m_code == station.toInt()){
+      // Turn to the right
+      pixy.line.setNextTurn(-90);
+      /* At this point in the code we will need to complete the delivery of the materials. 
+         in order to complete this we may need to end functionality to PixyCam, complete delivery, 
+         return to track/line, then turn line following program back on and continue with deliveries. 
 
+         Cannot forget to remove station from myDeliveries Array
+
+         
+      */
+    }
+  }
 }
 
 String readSerial(){
+/*
+ * Current implementation is for single station delivery, will need to edit 
+ * in order to add multi station delivery functionality. Will need to append station to 
+ * myDeliveries in numerical order. 
+ * */
   String line = Serial.readStringUntil("/n");
   String station;
 // If Serial monitor line contains the string "New Delivery" from python GUI then append myDeliveries array    
