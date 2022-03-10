@@ -18,7 +18,8 @@ int rightLED = 9;
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
 Adafruit_DCMotor *leftMotor = AFMS.getMotor(1);
 Adafruit_DCMotor *rightMotor = AFMS.getMotor(2);
-int FAST = 200;
+// Play around with these values, remember 250 is max speed
+]int FAST = 200;
 int SLOW = 100;
 
 // Initialization of PixyCam
