@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QWidget
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtCore import QSize  
+import serial
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -210,8 +211,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         print(jobs)
         for items in jobs:
             print(items)
+        ser = serial.Serial('COMM Port', 9600, timeout = 1)
+        ser.write(bytes(jobs, 'utf-8'))
         
-
+    def retrieveData():
+        data = ser.readline().decode('ascii')
+        
+        
 
 
 if __name__ == "__main__":
