@@ -63,7 +63,7 @@ class Ui_MainWindow(object):
         self.pushButtonStation5.setFont(font)
         self.pushButtonStation5.setObjectName("pushButtonStation5")
         self.pushButtonHomeBase = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonHomeBase.setGeometry(QtCore.QRect(450, 1010, 191, 61))
+        self.pushButtonHomeBase.setGeometry(QtCore.QRect(440, 1010, 191, 61))
         font = QtGui.QFont()
         font.setPointSize(24)
         font.setBold(False)
@@ -93,17 +93,32 @@ class Ui_MainWindow(object):
         self.pushButtonStartDeliveries.setFont(font)
         self.pushButtonStartDeliveries.setObjectName("pushButtonStartDeliveries")
         self.labelLiveUpdates = QtWidgets.QLabel(self.centralwidget)
-        self.labelLiveUpdates.setGeometry(QtCore.QRect(1090, 360, 371, 71))
+        self.labelLiveUpdates.setGeometry(QtCore.QRect(1090, 400, 371, 71))
         font = QtGui.QFont()
         font.setPointSize(24)
         self.labelLiveUpdates.setFont(font)
         self.labelLiveUpdates.setObjectName("labelLiveUpdates")
-        self.textEditDesiredDeliveries = QtWidgets.QTextEdit(self.centralwidget)
-        self.textEditDesiredDeliveries.setGeometry(QtCore.QRect(1090, 90, 401, 261))
-        self.textEditDesiredDeliveries.setObjectName("textEditDesiredDeliveries")
-        self.textEditLiveUpdates = QtWidgets.QTextEdit(self.centralwidget)
-        self.textEditLiveUpdates.setGeometry(QtCore.QRect(1090, 420, 401, 441))
-        self.textEditLiveUpdates.setObjectName("textEditLiveUpdates")
+        
+        self.pushButtonRemoveStop = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonRemoveStop.setGeometry(QtCore.QRect(1090, 360, 185, 40))
+        font = QtGui.QFont()
+        font.setPointSize(20)
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButtonRemoveStop.setFont(font)
+        self.pushButtonRemoveStop.setObjectName("pushRemoveStation")
+        
+        self.pushButtonClearStops = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonClearStops.setGeometry(QtCore.QRect(1307, 360, 185, 40))
+        font = QtGui.QFont()
+        font.setPointSize(20)
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButtonClearStops.setFont(font)
+        self.pushButtonClearStops.setObjectName("pushClearStops")
+
+        
+        
         self.labelPlantLayout = QtWidgets.QLabel(self.centralwidget)
         self.labelPlantLayout.setGeometry(QtCore.QRect(10, 10, 1071, 1171))
         self.labelPlantLayout.setText("")
@@ -121,8 +136,6 @@ class Ui_MainWindow(object):
         self.pushButtonStopDeliveries.raise_()
         self.pushButtonStartDeliveries.raise_()
         self.labelLiveUpdates.raise_()
-        self.textEditDesiredDeliveries.raise_()
-        self.textEditLiveUpdates.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1517, 21))
@@ -153,7 +166,8 @@ class Ui_MainWindow(object):
         self.pushButtonStartDeliveries.setText(_translate("MainWindow", "Start Deliveries"))
         self.labelLiveUpdates.setText(_translate("MainWindow", "Live Updates:"))
         self.menuManufacturing_Plant_Deliveries.setTitle(_translate("MainWindow", "Manufacturing Plant Deliveries"))
-
+        
+    
 import test_rc
 
 if __name__ == "__main__":
