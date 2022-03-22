@@ -1,10 +1,12 @@
-import sys
+import sys, serial, time
 from mainWindowUI import QtCore, QtGui, QtWidgets, Ui_MainWindow
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QWidget
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtCore import QSize  
-import serial
+
+
+ser = serial.Serial('COM5', 9600, timeout = 1)
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -202,22 +204,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 #Create sorted list of jobs
     def sendJob(self):
-        jobs = []
-        for row in range(self.listDesiredDeliveries.count()):
-            item = self.listDesiredDeliveries.item(row)
-            if not item.isHidden():
-                text = item.text()
-                jobs.append(text)
-        print(jobs)
-        for items in jobs:
-            print(items)
-        ser = serial.Serial('COMM Port', 9600, timeout = 1)
-        ser.write(bytes(jobs, 'utf-8'))
-        
-    def retrieveData():
-        data = ser.readline().decode('ascii')
+        entries = range(self.listDesiredDeliveries.count())
+        for i in entries:  
+            #print(i)     
+            print(self.listDesiredDeliveries.item(i).text() + " Removed!")
+            stationNum = self.listDesiredDeliveries.item(i).text()
+            print('Station Sent: ' + stationNum)
+            ser.write(bytes(str(stationNum[-1]), 'utf-8'))
+            time.sleep(1)
+
+
+
         
         
+        # jobs = []
+        # for row in range(self.listDesiredDeliveries.count()):
+        #     item = self.listDesiredDeliveries.item(row)
+        #     if not item.isHidden():
+        #         text = item.text()
+        #         jobs.append(text)
+        # print(jobs)
+        # for items in jobs:
+        #     print(items)
+        
+
 
 
 if __name__ == "__main__":
