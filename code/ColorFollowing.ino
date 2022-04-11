@@ -1,6 +1,7 @@
 #include <Pixy2.h>
 #include <PIDLoop.h>
 #include <Wire.h>
+#include <Encoder.h>
 #include <Adafruit_MotorShield.h>
 
 // Initializing Motor Shield, Motor speeds, maximum allowed is 250
@@ -19,6 +20,10 @@ int oldSignature, trackedBlock = 0;
 
 // Creating PID Loop
 PIDLoop headingLoop(5000, 0, 0, false);
+
+// Encoder 
+Encoder leftEnc(19,18);
+Encoder rightEnc(2,3);
 
 void setup()
 {
@@ -119,23 +124,62 @@ int FollowLine(int xCoord, int yCoord){
 
 int8_t StationFound(int8_t res){
   
+  leftMotor -> run(RELEASE);
+  rightMotor -> run(RELEASE);
   pixy.changeProg("line");
   Serial.println("Station Mode");
-  leftMotor -> run(FORWARD);
-  leftMotor -> setSpeed(0);
-  rightMotor -> run(FORWARD);
-  rightMotor -> setSpeed(0);
+  delay(2000);  
   Serial.println(res);
-  delay(2000);
   pixy.line.barcodes -> print();
-  delay(2000);
   Serial.println(pixy.line.barcodes -> m_code);
   if (LINE_BARCODE){
-      if (pixy.line.barcodes->m_code==33){
+      if (pixy.line.barcodes->m_code==0){
         Serial.println("Found Station 1");
         //Turn 90 degrees to the right
-      }
+        long leftPos = abs(leftEnc.read());
+        long rightPos = abs(rightEnc.read());
+        Serial.print("Left: ");
+        Serial.println(leftPos);
+        Serial.print("Right: ");
+        Serial.println(rightPos);
+        delay(5000);
+
+        //Crawl Forward 2 inches due to camera tilt error
+        long rightAdjust = rightPos + 1500;
+        long leftAdjust = leftPos + 1500;
+        while(leftPos <= leftAdjust && rightPos <= rightAdjust){
+          leftMotor -> run(FORWARD);
+          leftMotor -> setSpeed(50);
+          rightMotor -> run(FORWARD);
+          rightMotor -> setSpeed(50);
+          leftPos = abs(leftEnc.read());
+          rightPos = abs(rightEnc.read());
+          Serial.print("Left: ");
+          Serial.println(leftPos);
+          Serial.print("Right: ");
+          Serial.println(rightPos);
+        }
+        leftMotor -> run(RELEASE);
+        rightMotor -> run(RELEASE);
+        Serial.print("Left: ");
+        Serial.println(leftPos);
+        Serial.print("Right: ");
+        Serial.println(rightPos);
+        delay(10000);
+        long leftTargetPos = leftPos + 6500;        
+        while(leftPos < leftTargetPos){
+          leftMotor -> run(FORWARD);
+          leftMotor -> setSpeed(50);
+          leftPos = leftEnc.read();
+      
+        }
+          leftMotor -> run(RELEASE);
+          Serial.print("Left: ");
+          Serial.println(leftPos);
+          Serial.print("Right: ");
+          Serial.println(rightPos);
+        
+      }delay(10000);
   } 
-  delay(5000);
   pixy.changeProg("color");
 }
