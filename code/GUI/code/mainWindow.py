@@ -202,32 +202,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def dialogStopDeliveries(self):
         print("Stop Now, RETURN HOME!")
 
-#Create sorted list of jobs
     def sendJob(self):
         entries = range(self.listDesiredDeliveries.count())
         for i in entries:  
             #print(i)     
-            print(self.listDesiredDeliveries.item(i).text() + " Removed!")
+            #print(self.listDesiredDeliveries.item(i).text() + " Removed!")
+            #Send First Station
             stationNum = self.listDesiredDeliveries.item(i).text()
             print('Station Sent: ' + stationNum)
             ser.write(bytes(str(stationNum[-1]), 'utf-8'))
             time.sleep(1)
-
-
-
-        
-        
-        # jobs = []
-        # for row in range(self.listDesiredDeliveries.count()):
-        #     item = self.listDesiredDeliveries.item(row)
-        #     if not item.isHidden():
-        #         text = item.text()
-        #         jobs.append(text)
-        # print(jobs)
-        # for items in jobs:
-        #     print(items)
-        
-
+            # Wait until 'delivered' is printed to hc05 serial then go to next 'i'
 
 
 if __name__ == "__main__":
