@@ -206,14 +206,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         entries = range(self.listDesiredDeliveries.count())
         for i in entries:  
             #print(i)     
-            #print(self.listDesiredDeliveries.item(i).text() + " Removed!")
+            #print(self.listDesiredDeliveries.item(i).text())
+            
             #Send First Station
-            stationNum = self.listDesiredDeliveries.item(i).text()
-            print('Station Sent: ' + stationNum)
-            ser.write(bytes(str(stationNum[-1]), 'utf-8'))
+            station = self.listDesiredDeliveries.item(i).text()
+            print(station)
+            #Strips the 'station' from the string and send just the number to the HC05 Serial
+            ser.write(bytes(str(station[-1]), 'utf-8'))
+            time.sleep(1)
+            
+            #Play with stripping station from the string, the above method only takes the last item of the string. 
+            #This will only work with single digit station numbers
+            splitStr = station.split()
+            print(splitStr)
+            stationNum = splitStr[-1]
+            ser.write(bytes(str(stationNum), 'utf-8'))
             time.sleep(1)
             # Wait until 'delivered' is printed to hc05 serial then go to next 'i'
-
+            
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
