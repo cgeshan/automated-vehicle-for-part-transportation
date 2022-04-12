@@ -38,9 +38,10 @@ void loop(){
     delay(20);
     if (jobs > 0){
       Serial.println("Processing Jobs...");
+      delay(1000);
       Serial.print("Job: Delivery required to station ");
       Serial.println(jobs);
-      delay(5000);
+      delay(2500);
       leftMotor -> run(FORWARD);
       leftMotor -> setSpeed(50);       
       rightMotor -> run(FORWARD);
@@ -51,6 +52,7 @@ void loop(){
 
       HC05.println("Delivered");
       jobs = 0;
+      delay(1000);
     }else{
         leftMotor -> run(RELEASE);
         rightMotor -> run(RELEASE);
