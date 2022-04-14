@@ -1,3 +1,5 @@
+
+   
 #include <Pixy2.h>
 #include <PIDLoop.h>
 #include <Wire.h>
@@ -24,6 +26,8 @@ PIDLoop headingLoop(5000, 0, 0, false);
 // Encoder 
 Encoder leftEnc(19,18);
 Encoder rightEnc(2,3);
+
+long leftStart, rightStart;
 
 void setup()
 {
@@ -67,8 +71,14 @@ void loop()
         int xCoord = pixy.ccc.blocks[trackedBlock].m_x;
         int yCoord = pixy.ccc.blocks[trackedBlock].m_y;
         FollowLine(xCoord, yCoord);
-      } 
+      } else if(pixy.ccc.blocks[i].m_signature == 3){
+
+        pixy.changeProg("line");
+
+        completeDelivery();
+        returnToPath(leftStart, rightStart);
     }
+   }
   }else{
     Serial.println("No Blocks :(");
     leftMotor -> run(RELEASE);
@@ -78,47 +88,47 @@ void loop()
 
 int FollowLine(int xCoord, int yCoord){
   int left, right;
-  Serial.println("Follow Track");
+  //Serial.println("Follow Track");
   if(xCoord < (xCenterColor - 10)){
-      left = 75;
-      right = 100;
+      left = 25;
+      right = 50;
       leftMotor -> run(FORWARD);
       leftMotor -> setSpeed(left);
       rightMotor -> run(FORWARD);
       rightMotor -> setSpeed(right);
-      Serial.println("Right1");
+      //Serial.println("Right1");
     }else if(xCoord > (xCenterColor + 10)){
-      Serial.println("Left1");
-      left = 100;
-      right =75;
+      //Serial.println("Left1");
+      left = 50;
+      right =25;
       leftMotor -> run(FORWARD);
       leftMotor -> setSpeed(left);
       rightMotor -> run(FORWARD);
       rightMotor -> setSpeed(right);
     }else if(xCoord < (xCenterColor - 100)){
       left = 25;
-      right = 100;
+      right = 50;
       leftMotor -> run(FORWARD);
       leftMotor -> setSpeed(left);
       rightMotor -> run(FORWARD);
       rightMotor -> setSpeed(right);
-      Serial.println("Right2");
+      //Serial.println("Right2");
     }else if(xCoord > (xCenterColor + 100)){
-      Serial.println("Left2");
-      left = 100;
+      //Serial.println("Left2");
+      left = 50;
       right = 25;
       leftMotor -> run(FORWARD);
       leftMotor -> setSpeed(left);
       rightMotor -> run(FORWARD);
       rightMotor -> setSpeed(right);
     }else {
-      left = 100;
-      right = 100;
+      left = 50;
+      right = 50;
       leftMotor -> run(FORWARD);
       leftMotor -> setSpeed(left);
       rightMotor -> run(FORWARD);
       rightMotor -> setSpeed(right);
-      Serial.println("Straight");
+      //Serial.println("Straight");
     }
 }
 
@@ -127,59 +137,132 @@ int8_t StationFound(int8_t res){
   leftMotor -> run(RELEASE);
   rightMotor -> run(RELEASE);
   pixy.changeProg("line");
-  Serial.println("Station Mode");
-  delay(2000);  
-  Serial.println(res);
+  //Serial.println("Station Mode");
+  delay(500);  
+  //Serial.println(res);
+
+  leftStart = abs(leftEnc.read());
+  rightStart = abs(rightEnc.read());
+  Serial.println("Station Mode:");
+  Serial.println(leftStart);
+  Serial.println(rightStart);
+
+  long leftPos = abs(leftEnc.read());
+  long rightPos = abs(rightEnc.read());
+//  Serial.print("Left: ");
+//  Serial.println(leftPos);
+//  Serial.print("Right: ");
+//  Serial.println(rightPos);
+  delay(500);
+
+// Crawl Forward 2 inches
+  crawl(leftPos, rightPos);
+  
   pixy.line.barcodes -> print();
-  Serial.println(pixy.line.barcodes -> m_code);
+ // Serial.println(pixy.line.barcodes -> m_code);
   if (LINE_BARCODE){
-      if (pixy.line.barcodes->m_code==0){
+      if (pixy.line.barcodes->m_code==9){//change to jobs later
         Serial.println("Found Station 1");
         //Turn 90 degrees to the right
-        long leftPos = abs(leftEnc.read());
-        long rightPos = abs(rightEnc.read());
-        Serial.print("Left: ");
-        Serial.println(leftPos);
-        Serial.print("Right: ");
-        Serial.println(rightPos);
-        delay(5000);
-
-        //Crawl Forward 2 inches due to camera tilt error
-        long rightAdjust = rightPos + 1500;
-        long leftAdjust = leftPos + 1500;
-        while(leftPos <= leftAdjust && rightPos <= rightAdjust){
-          leftMotor -> run(FORWARD);
-          leftMotor -> setSpeed(50);
-          rightMotor -> run(FORWARD);
-          rightMotor -> setSpeed(50);
-          leftPos = abs(leftEnc.read());
-          rightPos = abs(rightEnc.read());
-          Serial.print("Left: ");
-          Serial.println(leftPos);
-          Serial.print("Right: ");
-          Serial.println(rightPos);
-        }
-        leftMotor -> run(RELEASE);
-        rightMotor -> run(RELEASE);
-        Serial.print("Left: ");
-        Serial.println(leftPos);
-        Serial.print("Right: ");
-        Serial.println(rightPos);
-        delay(10000);
-        long leftTargetPos = leftPos + 6500;        
+        long leftTargetPos = leftPos + 9600;        
         while(leftPos < leftTargetPos){
           leftMotor -> run(FORWARD);
           leftMotor -> setSpeed(50);
           leftPos = leftEnc.read();
-      
         }
-          leftMotor -> run(RELEASE);
-          Serial.print("Left: ");
-          Serial.println(leftPos);
-          Serial.print("Right: ");
-          Serial.println(rightPos);
-        
-      }delay(10000);
+        leftMotor -> run(RELEASE);
+//        Serial.print("Left: ");
+//        Serial.println(leftPos);
+//        Serial.print("Right: ");
+//        Serial.println(rightPos);      
+        delay(1000); 
+    } 
+  }else{
+    leftMotor -> run(RELEASE);
+    rightMotor -> run(RELEASE);
   } 
   pixy.changeProg("color");
+  
 }
+
+void crawl(long leftPos, long rightPos){
+    //Crawl Forward 2 inches due to camera tilt error
+  long rightAdjust = rightPos + 3000;
+  long leftAdjust = leftPos + 3000;
+  while(leftPos <= leftAdjust && rightPos <= rightAdjust){
+    leftMotor -> run(FORWARD);
+    leftMotor -> setSpeed(50);
+    rightMotor -> run(FORWARD);
+    rightMotor -> setSpeed(50);
+    leftPos = abs(leftEnc.read());
+    rightPos = abs(rightEnc.read());
+//    Serial.print("Left: ");
+//    Serial.println(leftPos);
+//    Serial.print("Right: ");
+//    Serial.println(rightPos);
+  }
+  leftMotor -> run(RELEASE);
+  rightMotor -> run(RELEASE);
+//  Serial.print("Left: ");
+//  Serial.println(leftPos);
+//  Serial.print("Right: ");
+//  Serial.println(rightPos);
+  delay(500);
+}
+
+
+
+void completeDelivery(){
+    Serial.println("Pick kUp");
+
+    leftMotor -> run(RELEASE);
+    rightMotor -> run(RELEASE);
+    delay(10000);
+    Serial.println("DONEEEEE");
+
+}
+
+void returnToPath(long leftStart, long rightStart){
+  Serial.println("BACK UP Test");
+  delay(1000);
+
+  Serial.println(leftStart);
+  Serial.println(rightStart);
+  delay(1000);
+
+  long leftPos = abs(leftEnc.read());
+  long rightPos = abs(rightEnc.read());
+  Serial.println(leftPos);
+  Serial.println(rightPos);
+  delay(1000);
+  
+  while(leftPos >= leftStart && rightPos >= rightStart){
+    leftMotor -> run(BACKWARD);
+    leftMotor -> setSpeed(50);
+    rightMotor -> run(BACKWARD);
+    rightMotor -> setSpeed(50);
+    leftPos = abs(leftEnc.read());
+    rightPos = abs(rightEnc.read());
+//    Serial.print("Left: ");
+//    Serial.println(leftPos);
+//    Serial.print("Right: ");
+//    Serial.println(rightPos);
+  }
+  leftMotor -> run(RELEASE);
+  rightMotor -> run(RELEASE);
+  delay(1000);
+
+  long rightAdjust = rightPos + (abs(leftEnc.read() - abs(leftStart)))-150; 
+  while(rightPos <= rightAdjust){
+    rightMotor -> run(FORWARD);
+    rightMotor -> setSpeed(50);
+
+    rightPos = abs(rightEnc.read());
+//    Serial.print("Left: ");
+//    Serial.println(leftPos);
+//    Serial.print("Right: ");
+//    Serial.println(rightPos);
+  }
+  pixy.changeProg("color");
+}
+
