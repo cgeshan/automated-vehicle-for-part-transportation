@@ -150,7 +150,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
 #Setting up the text values of all pushbuttons
     def clearStops(self):
-        print("All Stops Cleared!")
+        #print("All Stops Cleared!")
         self.listDesiredDeliveries.clear()
     
     def removeStop(self):
@@ -158,72 +158,93 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if not listItems: return        
         for item in listItems:
             self.listDesiredDeliveries.takeItem(self.listDesiredDeliveries.row(item))
-        print(item.text() + " Removed!")
+        #print(item.text() + " Removed!")
         
     def dialogHomeBase(self):
-        print("Home Base")
+       # print("Home Base")
         self.listDesiredDeliveries.addItem("Home Base")
         self.listDesiredDeliveries.sortItems()
         
     def dialogStation1(self):
-        print('Station 1')
+       # print('Station 1')
         self.listDesiredDeliveries.addItem("Station 1")
         self.listDesiredDeliveries.sortItems()
         
     def dialogStation2(self):
-        print('Station 2')
+       # print('Station 2')
         self.listDesiredDeliveries.addItem("Station 2")
         self.listDesiredDeliveries.sortItems()
         
     def dialogStation3(self):
-        print('Station 3')
+       # print('Station 3')
         self.listDesiredDeliveries.addItem("Station 3")
         self.listDesiredDeliveries.sortItems()
         
     def dialogStation4(self):
-        print('Station 4')
+        #print('Station 4')
         self.listDesiredDeliveries.addItem("Station 4")
         self.listDesiredDeliveries.sortItems()
         
     def dialogStation5(self):
-        print('Station 5')
+       # print('Station 5')
         self.listDesiredDeliveries.addItem("Station 5")
         self.listDesiredDeliveries.sortItems()
         
     def dialogStation6(self):
-        print('Station 6')
+      #  print('Station 6')
         self.listDesiredDeliveries.addItem("Station 6")
         self.listDesiredDeliveries.sortItems()
     
     def dialogStartDeliveries(self):
-        print("Start Deliveries")
+       # print("Start Deliveries")
         self.sendJob()
         
     def dialogStopDeliveries(self):
         print("Stop Now, RETURN HOME!")
 
+#Create sorted list of jobs
     def sendJob(self):
+        self.listDesiredDeliveries.addItem('0')
         entries = range(self.listDesiredDeliveries.count())
-        for i in entries:  
-            #print(i)     
-            #print(self.listDesiredDeliveries.item(i).text())
-            
-            #Send First Station
+        # for i in entries:       
+        #      stationNum = self.listDesiredDeliveries.item(i).text()
+        #      print(stationNum)
+        # #     print('Station Sent: ' + stationNum)
+        #      ser.write(bytes(str(stationNum[-1]), 'utf-8'))
+        #      time.sleep(1)
+        for i in entries:
             station = self.listDesiredDeliveries.item(i).text()
-            print(station)
-            #Strips the 'station' from the string and send just the number to the HC05 Serial
-            ser.write(bytes(str(station[-1]), 'utf-8'))
-            time.sleep(1)
+            values = station.split()
+            stationNum = values[-1]
             
-            #Play with stripping station from the string, the above method only takes the last item of the string. 
-            #This will only work with single digit station numbers
-            splitStr = station.split()
-            print(splitStr)
-            stationNum = splitStr[-1]
+            # self.listDesiredDeliveries.takeItem(self.listDesiredDeliveries.row('0'))
+        
             ser.write(bytes(str(stationNum), 'utf-8'))
-            time.sleep(1)
-            # Wait until 'delivered' is printed to hc05 serial then go to next 'i'
+            status = ser.readline().decode('ascii')
+            if status == '':
+                status = ser.readline().decode('ascii')
+            elif status == 'Delivered':
+                print(status)
+                next 
             
+            
+
+
+
+        
+        
+        # jobs = []
+        # for row in range(self.listDesiredDeliveries.count()):
+        #     item = self.listDesiredDeliveries.item(row)
+        #     if not item.isHidden():
+        #         text = item.text()
+        #         jobs.append(text)
+        # print(jobs)
+        # for items in jobs:
+        #     print(items)
+        
+
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
