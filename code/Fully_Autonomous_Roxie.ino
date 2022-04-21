@@ -16,9 +16,6 @@
  *********************************************************************************/
  
  
- 
- 
- 
 #include <SoftwareSerial.h>
 #include <Pixy2.h>
 #include <PIDLoop.h>
@@ -37,7 +34,7 @@ Adafruit_DCMotor *rightMotor = AFMS.getMotor(2);
 Pixy2 pixy;
 int8_t res, blocks;
 int32_t error;
-char buf[96], buf[128] ;
+char buf[128] ;
 
 // Color following stuff
 long maxSize = 0;
@@ -68,15 +65,16 @@ void setup() {
   leftMotor -> run(RELEASE);
   rightMotor -> run(RELEASE);
   Serial.println("Motors On and Set to 0");
-  delay(2000);
+  delay(200);
 
   pixy.init();
-//  pixy.setLamp(1, 1);
-//  //pixy.changeProg("line");
-//  pixy.changeProg("color");
-//
-//  // look straight and down
-//  pixy.setServos(550, 800);
+  Serial.println("Turning on PixyCam");
+  pixy.setLamp(1, 1);
+  //pixy.changeProg("line");
+  pixy.changeProg("color");
+
+  // look straight and down
+  pixy.setServos(550, 800);
 }
 void loop() {
 
@@ -88,20 +86,10 @@ void loop() {
     Serial.print("Converted Int: ");
     Serial.println(jobs);
     delay(2000);
-    Serial.println("Turning on PixyCam");
-    pixy.setLamp(1, 1);
-    //pixy.changeProg("line");
-    pixy.changeProg("color");
-  
-    // look straight and down
-    pixy.setServos(550, 800);
-    delay(2000);
     delivery = true;
   }
 
-  while(delviery == true){
-    Serial.println("NOW IN DELIVERY MODE");
-    delay(2000);
+  while(delivery == true){
     blocks = pixy.ccc.getBlocks();
 
     //Serial.println(blocks);
@@ -112,7 +100,6 @@ void loop() {
           //res = pixy.line.getMainFeatures();
           StationFound(jobs); //StationFound(res, jobs);
           //Try resetting these char values here...if reading error then move into Station Found function 
-          buf[96] = '0';
           buf[128] = '0';
         } else if (pixy.ccc.blocks[i].m_signature == 1) {
           long newSize = pixy.ccc.blocks[i].m_height * pixy.ccc.blocks[i].m_width;
@@ -129,9 +116,10 @@ void loop() {
 
           completeDelivery();
           returnToPath(leftStart, rightStart);
+          delivery = false;
         }
       }
-    } else {
+    } else { 
       Serial.println("No Blocks :(");
       leftMotor -> run(RELEASE);
       rightMotor -> run(RELEASE);
@@ -154,14 +142,14 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
   rightMotor -> run(RELEASE);
   pixy.changeProg("line");
   //Serial.println("Station Mode");
-  delay(500);
+  delay(100);
   //Serial.println(res);
 
   leftStart = abs(leftEnc.read());
   rightStart = abs(rightEnc.read());
   Serial.println("Station Mode:");
-  Serial.println(leftStart);
-  Serial.println(rightStart);
+//  Serial.println(leftStart);
+//  Serial.println(rightStart);
 
   long leftPos = abs(leftEnc.read());
   long rightPos = abs(rightEnc.read());
@@ -169,10 +157,11 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
   //  Serial.println(leftPos);
   //  Serial.print("Right: ");
   //  Serial.println(rightPos);
-  delay(500);
+  delay(100);
 
   // Crawl Forward 2 inches
   crawl(leftPos, rightPos);
+  delay(500);
   res = pixy.line.getAllFeatures();
   pixy.line.barcodes -> print();
   // Serial.println(pixy.line.barcodes -> m_code);
@@ -181,7 +170,7 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
       Serial.print("Found Station ");
       Serial.println(jobs);
       //Turn 90 degrees to the right
-      long leftTargetPos = leftPos + 9600;
+      long leftTargetPos = leftPos + 10000;
       while (leftPos < leftTargetPos) {
         leftMotor -> run(FORWARD);
         leftMotor -> setSpeed(50);
@@ -192,7 +181,7 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
       //        Serial.println(leftPos);
       //        Serial.print("Right: ");
       //        Serial.println(rightPos);
-      delay(1000);
+      delay(100);
     }
 //    buf[96] = '0';
 //    buf[128] = '0';
@@ -208,6 +197,7 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
 
 void crawl(long leftPos, long rightPos) {
   //Crawl Forward 2 inches due to camera tilt error
+  delay(250);
   long rightAdjust = rightPos + 3000;
   long leftAdjust = leftPos + 3000;
   while (leftPos <= leftAdjust && rightPos <= rightAdjust) {
@@ -228,7 +218,7 @@ void crawl(long leftPos, long rightPos) {
   //  Serial.println(leftPos);
   //  Serial.print("Right: ");
   //  Serial.println(rightPos);
-  delay(500);
+  delay(100);
 }
 
 void completeDelivery() {
@@ -241,18 +231,22 @@ void completeDelivery() {
 }
 
 void returnToPath(long leftStart, long rightStart) {
-  Serial.println("BACK UP Test");
-  delay(1000);
+  Serial.println("BACK UP");
+  delay(100);
 
-  Serial.println(leftStart);
-  Serial.println(rightStart);
-  delay(1000);
+//  Serial.print("Right Start: ");
+//  Serial.println(leftStart);
+//  Serial.print("Right Start: ");
+//  Serial.println(rightStart);
+  delay(100);
 
   long leftPos = abs(leftEnc.read());
   long rightPos = abs(rightEnc.read());
-  Serial.println(leftPos);
-  Serial.println(rightPos);
-  delay(1000);
+//  Serial.print("Left Current: ");
+//  Serial.println(leftPos);
+//  Serial.print("Right Current: ");
+//  Serial.println(rightPos);
+  delay(100);
 
   while (leftPos >= leftStart && rightPos >= rightStart) {
     leftMotor -> run(BACKWARD);
@@ -268,21 +262,29 @@ void returnToPath(long leftStart, long rightStart) {
   }
   leftMotor -> run(RELEASE);
   rightMotor -> run(RELEASE);
-  delay(1000);
+  delay(100);
 
-  long rightAdjust = rightPos + (abs(leftEnc.read() - abs(leftStart))) - 450;
+  long rightAdjust = rightPos + (abs(leftEnc.read() - abs(leftStart))) -500 ;
+//  Serial.print("Right Current: ");
+//  Serial.println(rightPos);
+  Serial.print("Right Adjust: ");
+  Serial.println(rightAdjust);
+  delay(100);
   while (rightPos <= rightAdjust) {
     rightMotor -> run(FORWARD);
     rightMotor -> setSpeed(50);
-
     rightPos = abs(rightEnc.read());
     //    Serial.print("Left: ");
     //    Serial.println(leftPos);
-    //    Serial.print("Right: ");
-    //    Serial.println(rightPos);
+    Serial.print("Right: ");
+    Serial.println(rightPos);
   }
-  pixy.changeProg("color");
-  HC05.println("Delivered");
+  leftMotor -> run(RELEASE);
+  rightMotor -> run(RELEASE); 
+  HC05.print("Delivered");
+  delay(100);
+  Serial.println("Sent to Computer");
+  delay(100);   
 }
 
 int FollowLine(int xCoord, int yCoord) {
@@ -311,9 +313,9 @@ int FollowLine(int xCoord, int yCoord) {
     leftMotor -> setSpeed(left);
     rightMotor -> run(FORWARD);
     rightMotor -> setSpeed(right);
-    //Serial.println("Right2");
+   // Serial.println("Right2");
   } else if (xCoord > (xCenterColor + 100)) {
-    //Serial.println("Left2");
+   // Serial.println("Left2");
     left = 50;
     right = 25;
     leftMotor -> run(FORWARD);
@@ -327,6 +329,6 @@ int FollowLine(int xCoord, int yCoord) {
     leftMotor -> setSpeed(left);
     rightMotor -> run(FORWARD);
     rightMotor -> setSpeed(right);
-    //Serial.println("Straight");
+   // Serial.println("Straight");
   }
 }
