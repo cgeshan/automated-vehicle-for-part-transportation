@@ -70,11 +70,11 @@ void setup() {
   pixy.init();
   Serial.println("Turning on PixyCam");
   pixy.setLamp(1, 1);
-  //pixy.changeProg("line");
+  //pixy.changeProg("line"); 
   pixy.changeProg("color");
 
   // look straight and down
-  pixy.setServos(550, 800);
+  pixy.setServos(600, 700);
 }
 void loop() {
 
@@ -120,7 +120,7 @@ void loop() {
         }
       }
     } else { 
-      Serial.println("No Blocks :(");
+      //Serial.println("No Blocks :(");
       leftMotor -> run(RELEASE);
       rightMotor -> run(RELEASE);
     }
@@ -170,7 +170,7 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
       Serial.print("Found Station ");
       Serial.println(jobs);
       //Turn 90 degrees to the right
-      long leftTargetPos = leftPos + 10000;
+      long leftTargetPos = leftPos + 10250;
       while (leftPos < leftTargetPos) {
         leftMotor -> run(FORWARD);
         leftMotor -> setSpeed(50);
@@ -185,6 +185,16 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
     }
 //    buf[96] = '0';
 //    buf[128] = '0';
+  } else if (pixy.line.barcodes->m_code == 0){
+    leftMotor -> run(RELEASE);
+    rightMotor -> run(RELEASE);
+    Serial.println("Returned To Home Base");
+    HC05.print("Home");
+    delay(100); 
+    Serial.println("Sent to Computer");
+    delay(100);
+    delivery = false;
+    
   } else {
     leftMotor -> run(RELEASE);
     rightMotor -> run(RELEASE);
@@ -198,8 +208,8 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
 void crawl(long leftPos, long rightPos) {
   //Crawl Forward 2 inches due to camera tilt error
   delay(250);
-  long rightAdjust = rightPos + 3000;
-  long leftAdjust = leftPos + 3000;
+  long rightAdjust = rightPos + 2750;
+  long leftAdjust = leftPos + 2750;
   while (leftPos <= leftAdjust && rightPos <= rightAdjust) {
     leftMotor -> run(FORWARD);
     leftMotor -> setSpeed(50);
@@ -267,8 +277,8 @@ void returnToPath(long leftStart, long rightStart) {
   long rightAdjust = rightPos + (abs(leftEnc.read() - abs(leftStart))) -500 ;
 //  Serial.print("Right Current: ");
 //  Serial.println(rightPos);
-  Serial.print("Right Adjust: ");
-  Serial.println(rightAdjust);
+ // Serial.print("Right Adjust: ");
+ // Serial.println(rightAdjust);
   delay(100);
   while (rightPos <= rightAdjust) {
     rightMotor -> run(FORWARD);
@@ -276,15 +286,14 @@ void returnToPath(long leftStart, long rightStart) {
     rightPos = abs(rightEnc.read());
     //    Serial.print("Left: ");
     //    Serial.println(leftPos);
-    Serial.print("Right: ");
-    Serial.println(rightPos);
+  //  Serial.print("Right: ");
+   // Serial.println(rightPos);
   }
   leftMotor -> run(RELEASE);
   rightMotor -> run(RELEASE); 
   HC05.print("Delivered");
   delay(100);
   Serial.println("Sent to Computer");
-  delay(100);   
 }
 
 int FollowLine(int xCoord, int yCoord) {
