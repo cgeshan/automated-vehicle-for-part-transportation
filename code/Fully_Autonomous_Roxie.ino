@@ -44,8 +44,8 @@ int oldSignature, trackedBlock = 0;
 PIDLoop headingLoop(5000, 0, 0, false);
 
 // Encoder
-Encoder leftEnc(19, 18);
-Encoder rightEnc(2, 3);
+Encoder leftEnc(3, 2);
+Encoder rightEnc(19, 18);
 long leftStart, rightStart;
 
 //Bluetooth Setup
@@ -137,7 +137,7 @@ void loop() {
  */
 
 int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
-
+  pixy.setLamp(0, 0);
   leftMotor -> run(RELEASE);
   rightMotor -> run(RELEASE);
   pixy.changeProg("line");
@@ -199,7 +199,7 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
     leftMotor -> run(RELEASE);
     rightMotor -> run(RELEASE);
   }
-  
+  pixy.setLamp(1, 1);
   pixy.changeProg("color");
 
 }
