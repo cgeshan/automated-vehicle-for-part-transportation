@@ -74,7 +74,7 @@ void setup() {
   pixy.changeProg("color");
 
   // look straight and down
-  pixy.setServos(600, 700);
+  pixy.setServos(550, 550);
 }
 void loop() {
 
@@ -144,7 +144,12 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
   //Serial.println("Station Mode");
   delay(100);
   //Serial.println(res);
-
+  if(jobs == 0){
+    jobs = 15;
+  }else{
+    jobs = jobs;
+  }
+  Serial.println(jobs);
   leftStart = abs(leftEnc.read());
   rightStart = abs(rightEnc.read());
   Serial.println("Station Mode:");
@@ -300,8 +305,8 @@ int FollowLine(int xCoord, int yCoord) {
   int left, right;
   //Serial.println("Follow Track");
   if (xCoord < (xCenterColor - 10)) {
-    left = 25;
-    right = 50;
+    left = 75;
+    right = 100;
     leftMotor -> run(FORWARD);
     leftMotor -> setSpeed(left);
     rightMotor -> run(FORWARD);
@@ -309,8 +314,8 @@ int FollowLine(int xCoord, int yCoord) {
     //Serial.println("Right1");
   } else if (xCoord > (xCenterColor + 10)) {
     //Serial.println("Left1");
-    left = 50;
-    right = 25;
+    left = 100;
+    right = 75;
     leftMotor -> run(FORWARD);
     leftMotor -> setSpeed(left);
     rightMotor -> run(FORWARD);
@@ -332,8 +337,8 @@ int FollowLine(int xCoord, int yCoord) {
     rightMotor -> run(FORWARD);
     rightMotor -> setSpeed(right);
   } else {
-    left = 50;
-    right = 50;
+    left = 100;
+    right = 100;
     leftMotor -> run(FORWARD);
     leftMotor -> setSpeed(left);
     rightMotor -> run(FORWARD);
