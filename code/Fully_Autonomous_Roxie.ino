@@ -52,6 +52,7 @@ long leftStart, rightStart;
 SoftwareSerial HC05(10, 11);
 char input;
 int jobs;
+int stationCount = 0;
 bool delivery;
 
 
@@ -74,7 +75,7 @@ void setup() {
   pixy.changeProg("color");
 
   // look straight and down
-  pixy.setServos(550, 550);
+  pixy.setServos(800, 550);
 }
 void loop() {
 
@@ -140,6 +141,7 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
   pixy.setLamp(0, 0);
   leftMotor -> run(RELEASE);
   rightMotor -> run(RELEASE);
+  stationCount = stationCount + 1;
   pixy.changeProg("line");
   //Serial.println("Station Mode");
   delay(100);
@@ -149,6 +151,12 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
   }else{
     jobs = jobs;
   }
+   if(jobs >= stationCount){
+      jobs = jobs;
+    }else{
+      HC05.print("Missed");
+      delivery = false;
+    }
   Serial.println(jobs);
   leftStart = abs(leftEnc.read());
   rightStart = abs(rightEnc.read());
@@ -165,13 +173,25 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
   delay(100);
 
   // Crawl Forward 2 inches
-  crawl(leftPos, rightPos);
+  crawl(leftPos, rightPos); 
   delay(500);
   res = pixy.line.getAllFeatures();
   pixy.line.barcodes -> print();
   // Serial.println(pixy.line.barcodes -> m_code);
   if (LINE_BARCODE) {
-    if (pixy.line.barcodes->m_code == jobs) { //change to jobs later
+   
+    if (pixy.line.barcodes->m_code == 15){
+      HC05.print("Hub");
+      leftMotor -> run(RELEASE);
+      rightMotor -> run(RELEASE);
+      delay(500);
+      stationCount = 0;
+
+      pixy.changeProg("line");
+      
+      delivery = false;
+    }
+    else if (pixy.line.barcodes->m_code == jobs) { //change to jobs later
       Serial.print("Found Station ");
       Serial.println(jobs);
       //Turn 90 degrees to the right
@@ -190,15 +210,7 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
     }
 //    buf[96] = '0';
 //    buf[128] = '0';
-  } else if (pixy.line.barcodes->m_code == 0){
-    leftMotor -> run(RELEASE);
-    rightMotor -> run(RELEASE);
-    Serial.println("Returned To Home Base");
-    HC05.print("Home");
-    delay(100); 
-    Serial.println("Sent to Computer");
-    delay(100);
-    delivery = false;
+   
     
   } else {
     leftMotor -> run(RELEASE);
@@ -212,10 +224,20 @@ int8_t StationFound(int jobs) { //StationFound(int8_t res, int jobs)
 
 void crawl(long leftPos, long rightPos) {
   //Crawl Forward 2 inches due to camera tilt error
-  delay(250);
-  long rightAdjust = rightPos + 2750;
-  long leftAdjust = leftPos + 2750;
-  while (leftPos <= leftAdjust && rightPos <= rightAdjust) {
+  delay(2500);
+  long rightAdjust = rightPos + 1750;
+  long leftAdjust = leftPos + 1750;
+  Serial.print("Current Left: ");
+  Serial.println(leftPos);
+  Serial.print("Current Right: ");
+  Serial.println(rightPos);
+  delay(2500);
+  Serial.print("Target Left: ");
+  Serial.println(leftAdjust);
+  Serial.print("Target Right: ");
+  Serial.println(rightAdjust);
+  
+  while (leftPos <= leftAdjust) {
     leftMotor -> run(FORWARD);
     leftMotor -> setSpeed(50);
     rightMotor -> run(FORWARD);
@@ -229,15 +251,15 @@ void crawl(long leftPos, long rightPos) {
   }
   leftMotor -> run(RELEASE);
   rightMotor -> run(RELEASE);
-  //  Serial.print("Left: ");
-  //  Serial.println(leftPos);
-  //  Serial.print("Right: ");
-  //  Serial.println(rightPos);
+    Serial.print("Left: ");
+    Serial.println(leftPos);
+    Serial.print("Right: ");
+    Serial.println(rightPos);
   delay(100);
 }
 
 void completeDelivery() {
-  Serial.println("Pick Up");
+  Serial.println("At Station");
   leftMotor -> run(RELEASE);
   rightMotor -> run(RELEASE);
   //delay(10000);
@@ -246,58 +268,59 @@ void completeDelivery() {
 }
 
 void returnToPath(long leftStart, long rightStart) {
-  Serial.println("BACK UP");
-  delay(100);
+  Serial.println("Return to path");
+  delay(1000);
 
-//  Serial.print("Right Start: ");
-//  Serial.println(leftStart);
-//  Serial.print("Right Start: ");
-//  Serial.println(rightStart);
-  delay(100);
+  Serial.print("Right Start: ");
+  Serial.println(leftStart);
+  Serial.print("Right Start: ");
+  Serial.println(rightStart);
+  delay(5000);
 
   long leftPos = abs(leftEnc.read());
   long rightPos = abs(rightEnc.read());
-//  Serial.print("Left Current: ");
-//  Serial.println(leftPos);
-//  Serial.print("Right Current: ");
-//  Serial.println(rightPos);
-  delay(100);
+  Serial.print("Left Current: ");
+  Serial.println(leftPos);
+  Serial.print("Right Current: ");
+  Serial.println(rightPos);
+  delay(5000);
 
-  while (leftPos >= leftStart && rightPos >= rightStart) {
+  while (leftPos >= (leftStart-1500) && rightPos >= (rightStart-1500)) {
     leftMotor -> run(BACKWARD);
     leftMotor -> setSpeed(50);
     rightMotor -> run(BACKWARD);
     rightMotor -> setSpeed(50);
     leftPos = abs(leftEnc.read());
     rightPos = abs(rightEnc.read());
-    //    Serial.print("Left: ");
-    //    Serial.println(leftPos);
-    //    Serial.print("Right: ");
-    //    Serial.println(rightPos);
+    Serial.print("Left: ");
+    Serial.println(leftPos);
+    Serial.print("Right: ");
+    Serial.println(rightPos);
   }
   leftMotor -> run(RELEASE);
   rightMotor -> run(RELEASE);
-  delay(100);
+  delay(5000);
 
-  long rightAdjust = rightPos + (abs(leftEnc.read() - abs(leftStart))) -500 ;
-//  Serial.print("Right Current: ");
-//  Serial.println(rightPos);
- // Serial.print("Right Adjust: ");
- // Serial.println(rightAdjust);
+  long rightAdjust = rightPos + ((abs(leftEnc.read() - abs(leftStart)))+750) ;
+  Serial.print("Right Current: ");
+  Serial.println(rightPos);
+  Serial.print("Right Adjust: ");
+  Serial.println(rightAdjust);
   delay(100);
   while (rightPos <= rightAdjust) {
     rightMotor -> run(FORWARD);
     rightMotor -> setSpeed(50);
     rightPos = abs(rightEnc.read());
     //    Serial.print("Left: ");
-    //    Serial.println(leftPos);
-  //  Serial.print("Right: ");
-   // Serial.println(rightPos);
+    //    Serial.println(leftPos); 
+    Serial.print("Right: ");
+    Serial.println(rightPos);
   }
   leftMotor -> run(RELEASE);
   rightMotor -> run(RELEASE); 
   HC05.print("Delivered");
-  delay(100);
+  delay(5000);
+
   Serial.println("Sent to Computer");
 }
 
@@ -305,8 +328,8 @@ int FollowLine(int xCoord, int yCoord) {
   int left, right;
   //Serial.println("Follow Track");
   if (xCoord < (xCenterColor - 10)) {
-    left = 75;
-    right = 100;
+    left = 40;
+    right = 75;
     leftMotor -> run(FORWARD);
     leftMotor -> setSpeed(left);
     rightMotor -> run(FORWARD);
@@ -314,8 +337,8 @@ int FollowLine(int xCoord, int yCoord) {
     //Serial.println("Right1");
   } else if (xCoord > (xCenterColor + 10)) {
     //Serial.println("Left1");
-    left = 100;
-    right = 75;
+    left = 75;
+    right = 40;
     leftMotor -> run(FORWARD);
     leftMotor -> setSpeed(left);
     rightMotor -> run(FORWARD);
@@ -337,8 +360,8 @@ int FollowLine(int xCoord, int yCoord) {
     rightMotor -> run(FORWARD);
     rightMotor -> setSpeed(right);
   } else {
-    left = 100;
-    right = 100;
+    left = 75;
+    right = 75;
     leftMotor -> run(FORWARD);
     leftMotor -> setSpeed(left);
     rightMotor -> run(FORWARD);
