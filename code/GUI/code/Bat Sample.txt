@@ -1,0 +1,3 @@
+@echo off
+"C:\Users\ME440\anaconda3\python.exe" "C:\Users\ME440\Desktop\Geshan Folder\April12 Updates\GUI\mainWindow.py"
+pause
