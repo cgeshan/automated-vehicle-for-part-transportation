@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1517</width>
+    <height>1146</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="pushButtonStation1">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>550</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Station 1</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonStation2">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>362</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Station 2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonStation3">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>175</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Station 3</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonStation6">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>550</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Station 6</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonStation4">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>175</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Station 4</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonStation5">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>362</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Station 5</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonHomeBase">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>1010</y>
+      <width>191</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Home Base</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelDesiredDeliveries">
+    <property name="geometry">
+     <rect>
+      <x>1090</x>
+      <y>30</y>
+      <width>371</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Desired Deliveries:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonStopDeliveries">
+    <property name="geometry">
+     <rect>
+      <x>1090</x>
+      <y>1010</y>
+      <width>391</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>STOP</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonStartDeliveries">
+    <property name="geometry">
+     <rect>
+      <x>1090</x>
+      <y>900</y>
+      <width>391</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Start Deliveries</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelLiveUpdates">
+    <property name="geometry">
+     <rect>
+      <x>1090</x>
+      <y>360</y>
+      <width>371</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Live Updates:</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEditDesiredDeliveries">
+    <property name="geometry">
+     <rect>
+      <x>1090</x>
+      <y>90</y>
+      <width>401</width>
+      <height>261</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEditLiveUpdates">
+    <property name="geometry">
+     <rect>
+      <x>1090</x>
+      <y>420</y>
+      <width>401</width>
+      <height>441</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelPlantLayout">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>1071</width>
+      <height>1171</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="../images/test.qrc">:/newPrefix/plantLayout.png</pixmap>
+    </property>
+   </widget>
+   <zorder>labelPlantLayout</zorder>
+   <zorder>pushButtonStation1</zorder>
+   <zorder>pushButtonStation2</zorder>
+   <zorder>pushButtonStation3</zorder>
+   <zorder>pushButtonStation6</zorder>
+   <zorder>pushButtonStation4</zorder>
+   <zorder>pushButtonStation5</zorder>
+   <zorder>pushButtonHomeBase</zorder>
+   <zorder>labelDesiredDeliveries</zorder>
+   <zorder>pushButtonStopDeliveries</zorder>
+   <zorder>pushButtonStartDeliveries</zorder>
+   <zorder>labelLiveUpdates</zorder>
+   <zorder>textEditDesiredDeliveries</zorder>
+   <zorder>textEditLiveUpdates</zorder>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1517</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuManufacturing_Plant_Deliveries">
+    <property name="title">
+     <string>Manufacturing Plant Deliveries</string>
+    </property>
+   </widget>
+   <addaction name="menuManufacturing_Plant_Deliveries"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources>
+  <include location="../images/test.qrc"/>
+  <include location="images/test.qrc"/>
+ </resources>
+ <connections/>
+</ui>
